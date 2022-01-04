@@ -1,0 +1,26 @@
+---
+# handlers file for role-bareos
+
+- name: restart bareos
+  service:
+    name: "{{ item }}"
+    state: restarted
+    enabled: yes
+  loop:
+    - bareos-dir
+    - bareos-sd
+    - bareos-fd
+    - apache2
+
+- name: restart bareos-dir
+  service:
+    name: bareos-dir
+    state: restarted
+    enabled: yes
+
+- name: restart postgresql
+  service:
+          name: "{{ postgres_daemon }}"
+          state: "restarted"
+          enable: yes
+          

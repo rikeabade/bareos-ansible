@@ -1,0 +1,8 @@
+---
+- hosts: webservers
+  become: yes 
+  roles:
+          - bareos_install
+  tags: bareos-server
+
+
