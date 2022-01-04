@@ -2,31 +2,30 @@
 # Set Repository 
 - name: Add Bareos Key Repository 
   apt_key:
-          url: "{{bareos_url}}/Realease.key"
-          state: present
+    url: "{{bareos_url}}/Release.key"
+    state: present
 
 - name: Add Bareos Repository
   apt_repository:
-          repo: "deb {{ bareos_url }} /"
-          state: present
-          filename: bareos
+    repo: "deb {{ bareos_url }} /"
+    state: present
+    filename: bareos
 
 # Install Bareos
 - name: Installing Bareos
   apt: 
-  name: "{{ pkgs }}"
-  state: present
+    name: "{{ pkgs }}"
+    state: present
   notify:
-          - restart bareos
+    - restart bareos
 
 # Install Web Admin
- - name: Tamplate Web Admin
-   template: 
-   scr: admin.conf.j2
-   dest: /etc/bareos/bareos-dir.d/console/admin.conf
-   onwer: bareos
-   group: bareos
-   mode: 0640 
-   notify: 
- - restart  bareos
-  
+- name: Tamplate Web Admin
+  template: 
+    src: admin.conf.j2
+    dest: /etc/bareos/bareos-dir.d/console/admin.conf
+    owner: bareos
+    group: bareos
+    mode: 0640 
+  notify: 
+    - restart bareos  

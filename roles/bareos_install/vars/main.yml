@@ -1,21 +1,21 @@
 ---
 # vars file for bareos_install
- dist: "debian_10"
- realease: 'realease/21/'
- bareos_url: "https://download.bareos.org/bareos/{{ realease }}/{{ dist }}"
- pkgs:
-         - bareos
-         - bareos-database-postgresql
-         - bareos-webui
+dist: "Debian_10"
+release: 'release/21'
+bareos_url: "https://download.bareos.org/bareos/{{ release }}/{{ dist }}"
+pkgs:
+  - bareos
+  - bareos-database-postgresql
+  - bareos-webui
 
 # var for postgresql
- postgresql_version: "14"
- postgresql_data_dir: "var/lib/postgresql/{{ postgresql_version }}/main"
- postgresql_bin_path: "/usr/lib/postgresql/{{ postgresql_version }}/bin"
- postgresql_deamon: "postgresql@{{ postgresql_version }} -main"
- postgresql_packges:
-         - postgresql -{{ postgres_version }}
-         - libpq-dev
+postgresql_version: "14"
+postgresql_data_dir: "/var/lib/postgresql/{{ postgresql_version }}/main"
+postgresql_bin_path: "/usr/lib/postgresql/{{ postgresql_version }}/bin"
+postgresql_deamon: "postgresql@{{ postgresql_version }}-main"
+postgresql_packages:
+  - postgresql-{{ postgresql_version }}
+  - libpq-dev
 
 postgresql_python_library:
   - python-psycopg2
