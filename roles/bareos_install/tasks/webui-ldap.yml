@@ -1,0 +1,76 @@
+---
+  - name: Installing dependencies
+    apt:
+      update_cache: yes
+      name: '{{ item }}'
+      state: present
+    loop:
+      - python-bareos
+      - libssl-dev
+      - python-pip
+
+  - name: Installing pip dependencies
+    pip:
+      name: sslpsk
+
+  - name: Adding bareos user to shadow group
+    user:
+      name: bareos
+      groups: shadow
+      append: yes
+
+  - name: Copying python script that auto create user config file
+    copy:
+      src: pam_exec_add_bareos_user.py
+      dest: /usr/local/bin/pam_exec_add_bareos_user.py
+      mode: '0755'
+
+  - name: Creating PAM config file
+    lineinfile:  
+      path: /etc/pam.d/bareos
+      line: '{{ item }}' 
+      create: yes
+    loop:
+      - auth     requisite           pam_sss.so 
+      - auth     [default=ignore]    pam_exec.so quiet /usr/local/bin/pam_exec_add_bareos_user.py --name pam-adduser --password EolTestanD0 --profile webui-admin
+
+        
+  - name: Copying PAM console configs
+    copy:
+      src: '{{ item }}'
+      dest: /etc/bareos/bareos-dir.d/console/
+      owner: bareos
+      group: bareos
+    loop:
+      - pam-console.conf
+      - pam-adduser.conf
+
+  - name: Creating PAM bconsole config
+    copy:
+      src: bconsole-pam.conf
+      dest: /etc/bareos/
+      owner: bareos
+      group: bareos
+
+  - name: Disabling default console
+    lineinfile:
+      path: /etc/bareos-webui/directors.ini
+      regexp: '^enabled.{4}yes'
+      line: 'enabled = "no"'
+
+  - name: Appending configs to directors.ini
+    blockinfile:
+      path: /etc/bareos-webui/directors.ini
+      block: |
+        [Console]
+        enabled              = "yes"
+        diraddress           = "localhost"
+        dirport              = 9101
+        tls_verify_peer      = false
+        server_can_do_tls    = false
+        server_requires_tls  = false
+        client_can_do_tls    = false
+        client_requires_tls  = false
+        pam_console_name     = "pam-webui"
+        pam_console_password = "olArT"
+
