@@ -71,6 +71,6 @@
         server_requires_tls  = false
         client_can_do_tls    = false
         client_requires_tls  = false
-        pam_console_name     = "pam-webui"
-        pam_console_password = "olArT"
+        pam_console_name     = ""
+        pam_console_password = ""
 
